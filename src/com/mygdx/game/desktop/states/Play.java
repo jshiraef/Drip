@@ -1,5 +1,8 @@
 package com.mygdx.game.desktop.states;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -9,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.game.desktop.Game;
 import com.mygdx.game.desktop.handlers.GameStateManager;
 
 
@@ -18,6 +22,8 @@ public class Play extends GameState
 	private World world;
 	private Box2DDebugRenderer b2dr;
 	private Matrix4 projectionMatrix;
+	
+	private OrthographicCamera b2dCam;
 	
 	public Play(GameStateManager gsm)
 	{
@@ -41,6 +47,20 @@ public class Play extends GameState
 		fdef.shape = shape;
 		body.createFixture(fdef);
 		
+		// create falling box
+		bdef.position.set(160, 200);
+		bdef.type = BodyType.DynamicBody;
+		body = world.createBody(bdef);
+		
+		shape.setAsBox(5, 5);
+		fdef.shape = shape;
+		
+		body.createFixture(fdef);
+		
+		// set up box2d cam
+		b2dCam = new OrthographicCamera();
+		b2dCam.setToOrtho(false, Game.V_WIDTH, Game.V_HEIGHT);
+		
 	}
 	
 	public void handleInput()
@@ -55,7 +75,12 @@ public class Play extends GameState
 	
 	public void render()
 	{
-		b2dr.render(world, projectionMatrix);
+		// clear screen
+		Gdx.gl30.glClear(GL30.GL_COLOR_BUFFER_BIT);
+		
+		
+		// draw box2d world
+		b2dr.render(world, b2dCam.combined);
 	}
 
 	public void dispose()
