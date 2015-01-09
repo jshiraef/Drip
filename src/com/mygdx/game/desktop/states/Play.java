@@ -14,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.desktop.Game;
 import com.mygdx.game.desktop.handlers.GameStateManager;
+import static com.mygdx.game.desktop.handlers.Box2DVariables.pixelsPerMeter;
 
 
 public class Play extends GameState	
@@ -35,31 +36,31 @@ public class Play extends GameState
 		
 		// create platform
 		BodyDef bdef = new BodyDef();
-		bdef.position.set(160, 120);
+		bdef.position.set(160 / pixelsPerMeter, 120/ pixelsPerMeter);
 		bdef.type = BodyType.StaticBody;
 		
 		Body body = world.createBody(bdef);
 		
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(50, 5);
+		shape.setAsBox(50 / pixelsPerMeter, 5 / pixelsPerMeter);
 		
 		FixtureDef fdef = new FixtureDef();
 		fdef.shape = shape;
 		body.createFixture(fdef);
 		
 		// create falling box
-		bdef.position.set(160, 200);
+		bdef.position.set(160 / pixelsPerMeter, 200 / pixelsPerMeter);
 		bdef.type = BodyType.DynamicBody;
 		body = world.createBody(bdef);
 		
-		shape.setAsBox(5, 5);
+		shape.setAsBox(5 / pixelsPerMeter, 5/ pixelsPerMeter);
 		fdef.shape = shape;
-		
+		fdef.restitution = .4f;
 		body.createFixture(fdef);
 		
 		// set up box2d cam
 		b2dCam = new OrthographicCamera();
-		b2dCam.setToOrtho(false, Game.V_WIDTH, Game.V_HEIGHT);
+		b2dCam.setToOrtho(false, Game.V_WIDTH / pixelsPerMeter, Game.V_HEIGHT / pixelsPerMeter);
 		
 	}
 	
