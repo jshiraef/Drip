@@ -9,11 +9,13 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.desktop.Game;
 import com.mygdx.game.desktop.handlers.GameStateManager;
+
 import static com.mygdx.game.desktop.handlers.Box2DVariables.pixelsPerMeter;
 
 
@@ -48,6 +50,16 @@ public class Play extends GameState
 		fdef.shape = shape;
 		body.createFixture(fdef);
 		
+		// create ball 
+		bdef.position.set(153 / pixelsPerMeter, 220 / pixelsPerMeter);
+		bdef.type = BodyType.DynamicBody;
+		body = world.createBody(bdef);
+		
+		CircleShape cshape = new CircleShape();
+		cshape.setRadius(5 / pixelsPerMeter);
+		fdef.shape = cshape;
+		body.createFixture(fdef);
+		
 		// create falling box
 		bdef.position.set(160 / pixelsPerMeter, 200 / pixelsPerMeter);
 		bdef.type = BodyType.DynamicBody;
@@ -55,7 +67,7 @@ public class Play extends GameState
 		
 		shape.setAsBox(5 / pixelsPerMeter, 5/ pixelsPerMeter);
 		fdef.shape = shape;
-		fdef.restitution = .4f;
+		fdef.restitution = .7f;
 		body.createFixture(fdef);
 		
 		// set up box2d cam
