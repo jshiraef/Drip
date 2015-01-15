@@ -14,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.desktop.Game;
+import com.mygdx.game.desktop.handlers.Box2DVariables;
 import com.mygdx.game.desktop.handlers.GameStateManager;
 
 import static com.mygdx.game.desktop.handlers.Box2DVariables.pixelsPerMeter;
@@ -21,7 +22,6 @@ import static com.mygdx.game.desktop.handlers.Box2DVariables.pixelsPerMeter;
 
 public class Play extends GameState	
 {
-	
 	private World world;
 	private Box2DDebugRenderer b2dr;
 	private Matrix4 projectionMatrix;
@@ -48,6 +48,7 @@ public class Play extends GameState
 		
 		FixtureDef fdef = new FixtureDef();
 		fdef.shape = shape;
+		fdef.filter.categoryBits = Box2DVariables.GROUND;
 		body.createFixture(fdef);
 		
 		// create ball 
@@ -58,6 +59,8 @@ public class Play extends GameState
 		CircleShape cshape = new CircleShape();
 		cshape.setRadius(5 / pixelsPerMeter);
 		fdef.shape = cshape;
+		fdef.filter.categoryBits = Box2DVariables.BALL;
+		fdef.filter.maskBits = Box2DVariables.GROUND;
 		body.createFixture(fdef);
 		
 		// create falling box
@@ -68,6 +71,8 @@ public class Play extends GameState
 		shape.setAsBox(5 / pixelsPerMeter, 5/ pixelsPerMeter);
 		fdef.shape = shape;
 		fdef.restitution = .7f;
+		fdef.filter.categoryBits = Box2DVariables.BOX;
+		fdef.filter.maskBits = Box2DVariables.GROUND;
 		body.createFixture(fdef);
 		
 		// set up box2d cam
@@ -89,8 +94,7 @@ public class Play extends GameState
 	public void render()
 	{
 		// clear screen
-		Gdx.gl30.glClear(GL30.GL_COLOR_BUFFER_BIT);
-		
+		Gdx.gl30.glClear(GL30.GL_COLOR_BUFFER_BIT);	
 		
 		// draw box2d world
 		b2dr.render(world, b2dCam.combined);
