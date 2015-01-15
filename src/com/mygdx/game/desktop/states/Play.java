@@ -10,11 +10,13 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.desktop.Game;
 import com.mygdx.game.desktop.handlers.Box2DVariables;
+import com.mygdx.game.desktop.handlers.CollisionListener;
 import com.mygdx.game.desktop.handlers.GameStateManager;
 
 import static com.mygdx.game.desktop.handlers.Box2DVariables.pixelsPerMeter;
@@ -33,6 +35,7 @@ public class Play extends GameState
 		super(gsm);
 		
 		world = new World(new Vector2(0, -9.81f), true);
+		world.setContactListener(new CollisionListener());
 		b2dr = new Box2DDebugRenderer();
 		projectionMatrix = new Matrix4();
 		
@@ -49,7 +52,9 @@ public class Play extends GameState
 		FixtureDef fdef = new FixtureDef();
 		fdef.shape = shape;
 		fdef.filter.categoryBits = Box2DVariables.GROUND;
-		body.createFixture(fdef);
+		fdef.filter.maskBits = Box2DVariables.BOX | Box2DVariables.BALL;
+		body.createFixture(fdef).setUserData("ground");
+		
 		
 		// create ball 
 		bdef.position.set(153 / pixelsPerMeter, 220 / pixelsPerMeter);
@@ -61,7 +66,7 @@ public class Play extends GameState
 		fdef.shape = cshape;
 		fdef.filter.categoryBits = Box2DVariables.BALL;
 		fdef.filter.maskBits = Box2DVariables.GROUND;
-		body.createFixture(fdef);
+		body.createFixture(fdef).setUserData("box");;
 		
 		// create falling box
 		bdef.position.set(160 / pixelsPerMeter, 200 / pixelsPerMeter);
@@ -73,7 +78,7 @@ public class Play extends GameState
 		fdef.restitution = .7f;
 		fdef.filter.categoryBits = Box2DVariables.BOX;
 		fdef.filter.maskBits = Box2DVariables.GROUND;
-		body.createFixture(fdef);
+		body.createFixture(fdef).setUserData("box");
 		
 		// set up box2d cam
 		b2dCam = new OrthographicCamera();
